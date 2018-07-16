@@ -1,5 +1,8 @@
 package es.osoco.urlshortener.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +52,7 @@ public class UrlService {
 	/**
 	 * Method that returns the LongUrl from the hashCode. It also validates the url's expiration
 	 * @param hashCode String.
-	 * @return UrlResponse object.
+	 * @return ResponseWrapper object.
 	 */
 	public ResponseWrapper<UrlDTO> getUrlByHashCode(String hashCode){
 		ResponseWrapper<UrlDTO> result = new ResponseWrapper<UrlDTO>();
@@ -82,12 +85,35 @@ public class UrlService {
 		return result;
 			
 	}
+	
+	/**
+	 * Method that returns the whole list of urls.
+	 * @return ResponseWrapper object.
+	 */
+	public ResponseWrapper<List<UrlDTO>> getUrlList(){
+		ResponseWrapper<List<UrlDTO>> result = new ResponseWrapper<List<UrlDTO>>();
+		
+		List<Url> urlList = this.urlRepository.findAll();
+		result.setStatus(true);
+		result.setData(createListOfUrlDTO(urlList));
+		return result;
+			
+	}
+	
+	private List<UrlDTO> createListOfUrlDTO(List<Url> listUrl){
+		List<UrlDTO> listResult = new ArrayList<UrlDTO>(listUrl.size());
+		for(Url u : listUrl){
+			listResult.add(new UrlDTO(u.getHashCode(),u.getUrlLong()));
+		}
+		
+		return listResult;
+	}
 
 	/**
 	 * Service method that creates the new entry in the table, 
 	 * either in an old record or in a new one.
 	 * @param urlsModel
-	 * @return
+	 * @return ResponseWrapper object
 	 */
 	@Transactional
 	public ResponseWrapper<UrlDTO> addNewUrl(UrlDTO urlsModel) {

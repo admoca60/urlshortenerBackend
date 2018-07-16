@@ -1,5 +1,7 @@
 package es.osoco.urlshortener.api;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +30,19 @@ public class UrlController {
 		return urlService.getUrlByHashCode(hashCode);
 	}
 	
+	@GetMapping("/")
+	public ResponseWrapper<List<UrlDTO>> getUrlList(){
+		return urlService.getUrlList();
+	}
 	@PostMapping("/add")
 	public ResponseWrapper<UrlDTO> addNewUrl(@RequestBody UrlDTO urlsModel){
 		return urlService.addNewUrl(urlsModel);
 	}
 	
 	@DeleteMapping("/delete")
-	public ResponseWrapper<UrlDTO> deleteUrl(@RequestBody UrlDTO urlsModel){
-		return urlService.logicalDeleteUrl(urlsModel);
+	public ResponseWrapper<UrlDTO> deleteUrl(@PathVariable("hashCode") String hashCode){
+		UrlDTO urlDTO = new UrlDTO();
+		urlDTO.setHashCode(hashCode);
+		return urlService.logicalDeleteUrl(urlDTO);
 	}
 }
