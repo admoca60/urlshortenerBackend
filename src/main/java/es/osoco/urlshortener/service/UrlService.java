@@ -87,13 +87,13 @@ public class UrlService {
 	}
 	
 	/**
-	 * Method that returns the whole list of urls.
+	 * Method that returns the whole list of urls which are allocated.
 	 * @return ResponseWrapper object.
 	 */
 	public ResponseWrapper<List<UrlDTO>> getUrlList(){
 		ResponseWrapper<List<UrlDTO>> result = new ResponseWrapper<List<UrlDTO>>();
 		
-		List<Url> urlList = this.urlRepository.findAll();
+		List<Url> urlList = this.urlRepository.findByAllocated(true);
 		result.setStatus(true);
 		result.setData(createListOfUrlDTO(urlList));
 		return result;
@@ -184,8 +184,9 @@ public class UrlService {
 		url.setAllocated(false);
 		url.setExpired(true);
 		
-		this.urlRepository.save(url);
+		url = this.urlRepository.save(url);
 		result.setStatus(true);
+		result.setData(new UrlDTO(url.getHashCode(),url.getUrlLong()));
 		return result;
 	}
 	

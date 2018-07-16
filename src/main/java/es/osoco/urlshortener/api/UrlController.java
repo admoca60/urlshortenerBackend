@@ -39,7 +39,7 @@ public class UrlController {
 		return urlService.addNewUrl(urlsModel);
 	}
 	
-	@DeleteMapping("/delete")
+	@DeleteMapping("/delete/{hashCode}")
 	public ResponseWrapper<UrlDTO> deleteUrl(@PathVariable("hashCode") String hashCode){
 		UrlDTO urlDTO = new UrlDTO();
 		urlDTO.setHashCode(hashCode);
